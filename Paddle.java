@@ -5,8 +5,6 @@
  */
 package pong;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import javax.swing.JPanel;
 
 /**
@@ -17,39 +15,40 @@ public class Paddle extends JPanel{
     
     private final int speed;
     private final int xCoord;
-    private final int width;
     private int yCoord;
-    private final int height;
+    private final int paddleWidth;
+    private final int paddleHeight;
     
-    Paddle(int speed, int xCoord, int yCoord, int width, int height){
+    Paddle(int speed, int xCoord, int yCoord, int paddleWidth, int paddleHeight){
         this.speed = speed;
         this.xCoord = xCoord;
         this.yCoord = yCoord;
-        this.width = width;
-        this.height = height;
-    }
-    
-    @Override
-    protected void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.setColor(Color.RED);
-        g.fillRect(xCoord, yCoord, width, height);
-    }
-    
-    public int getSpeed(){
-        return this.speed;
+        this.paddleWidth = paddleWidth;
+        this.paddleHeight = paddleHeight;
     }
 
+    public int getSpeed() {
+        return speed;
+    }    
+    
     public int getxCoord() {
         return xCoord;
+    }
+
+    public int getPaddleWidth() {
+        return paddleWidth;
+    }
+
+    public int getPaddleHeight() {
+        return paddleHeight;
     }
     
     public int getyCoord() {
         return yCoord;
     }
     
-    public void setyCoord(int yCoord){
+    public void setyCoord(int yCoord) {
         this.yCoord = yCoord;
     }
-   
+    
 }

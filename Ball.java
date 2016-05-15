@@ -5,8 +5,6 @@
  */
 package pong;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import javax.swing.JPanel;
 
 /**
@@ -16,38 +14,51 @@ import javax.swing.JPanel;
 public class Ball extends JPanel{
     
     private int xCoord;
-    private final int width;
     private int yCoord;
-    private final int height;
+    private final int ballWidth;
+    private final int ballHeight;
     
-    Ball(int xCoord, int width, int yCoord, int height){
+    Ball(int xCoord, int yCoord, int ballWidth, int ballHeight){
         this.xCoord = xCoord;
-        this.width = width;
         this.yCoord = yCoord;
-        this.height = height;
+        this.ballWidth = ballWidth;
+        this.ballHeight = ballHeight;
     }
 
-    @Override
-    protected void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.setColor(Color.RED);
-        g.fillRect(xCoord, yCoord, width, height);
+    
+    /* Returns 0 if the ball doesn't collide with the paddle
+     *         1 if the ball collides with the paddle's left edge
+     *         2 if the ball collides with the paddle's top edge
+     *         3 if the ball collides with the paddle's right edge
+     *         4 if the ball collides with the paddle's bottom edge
+     */
+    public int collidesWith(Paddle paddle){
+        
+        return 0;
     }
     
     public int getxCoord() {
         return xCoord;
     }
 
-    public void setxCoord(int xCoord) {
-        this.xCoord = xCoord;
+    public int getBallWidth() {
+        return ballWidth;
     }
 
+    public int getBallHeight() {
+        return ballHeight;
+    }
+    
     public int getyCoord() {
         return yCoord;
     }
-
+    
+    public void setxCoord(int xCoord) {
+        this.xCoord = xCoord;
+    }
+    
     public void setyCoord(int yCoord) {
         this.yCoord = yCoord;
     }
-    
+
 }

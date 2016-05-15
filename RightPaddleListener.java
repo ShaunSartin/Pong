@@ -7,6 +7,8 @@ package pong;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JFrame;
+import static pong.Pong.keysPressed;
 
 /**
  *
@@ -14,10 +16,10 @@ import java.awt.event.KeyListener;
  */
 public class RightPaddleListener implements KeyListener{
 
-    private final Paddle paddle;
+    private final GameField gameGrid;
     
-    RightPaddleListener(Paddle paddle){
-        this.paddle = paddle;
+    RightPaddleListener(JFrame frame, GameField gameGrid){
+        this.gameGrid = gameGrid;
     }
     
     @Override
@@ -26,19 +28,20 @@ public class RightPaddleListener implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP){
-            //System.out.println("'" + e.getKeyChar() + "' was pressed.");
-            paddle.setyCoord(paddle.getyCoord() - paddle.getSpeed());
+            keysPressed.add(e.getKeyCode());
         }
             
         else if (e.getKeyCode() == KeyEvent.VK_DOWN){
-            //System.out.println("'" + e.getKeyChar() + "' was pressed.");
-            paddle.setyCoord(paddle.getyCoord() + paddle.getSpeed());
-                
+            keysPressed.add(e.getKeyCode());
         }
-        paddle.repaint();
+        
+        gameGrid.repaint();
+        
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+        keysPressed.remove(e.getKeyCode());
+    }
     
 }

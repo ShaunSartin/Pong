@@ -5,66 +5,52 @@
  */
 package pong;
 
-import java.awt.GridLayout;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JFrame;
-import javax.swing.KeyStroke;
 import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Pong {
-
-    public final static int PADDLE_SPEED = 5;
+    
+    public final static int PADDLE_SPEED = 1;       // The number of pixels a paddle moves per event
     public final static int MAX_WIDTH = 800;        // The width of the game board
     public final static int MAX_HEIGHT = 500;       // The height of the game board 
     public final static int PADDLE_WIDTH = 15;
     public final static int PADDLE_HEIGHT = 100;
     public final static int BALL_WIDTH = 10;
     public final static int BALL_HEIGHT = 10;
-    public final static int X_OFFSET = 15;          // The distance a paddle is from the edge of the game board
+    public final static int Y_OFFSET = 170;         // The distance a paddle is from the top of the game board
+    public final static int X_OFFSET = 15;          // The distance a paddle is from the side-edge of the game board
+    
+    public static boolean isSleeping = false;       // Prevents the paddles from moving while the thread is asleep. Without this, the paddles could 'jump' after the ball goes into a goal.
+    public static Set<Integer> keysPressed = new HashSet<>();   // Keeps track of the 'pressed status' of all the necessary keys. KeyCodes are added and removed to this set as needed.
     
     public static void main(String[] args) {
         
-        /* Create the screen for the game */
-        JFrame gameBoard = new JFrame("PONG");
-        //gameBoard.setLayout(new GridLayout(1, 3));
-        gameBoard.setSize(MAX_WIDTH, MAX_HEIGHT);
-        gameBoard.setResizable(false);
-        gameBoard.setLocationRelativeTo(null);
-        gameBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        /* Create two padles and a ball by using the constants defined in lines 15 through 22 */  
-        Paddle leftPaddle = new Paddle(PADDLE_SPEED, 0, 170, PADDLE_WIDTH, PADDLE_HEIGHT);
-        Paddle rightPaddle = new Paddle(PADDLE_SPEED, 50, 170, PADDLE_WIDTH, PADDLE_HEIGHT);
-        Ball ball = new Ball(135, BALL_WIDTH, 200, BALL_HEIGHT);
-        
-        /* Create Key Bindings for the paddles */
-//        leftPaddle.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('s'), "leftDown");
-//        leftPaddle.getActionMap().put("leftDown", new MoveDownAction(leftPaddle));
-//        leftPaddle.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('w'), "leftUp");
-//        leftPaddle.getActionMap().put("leftUp", new MoveUpAction(leftPaddle));
-//        rightPaddle.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "rightDown");
-//        rightPaddle.getActionMap().put("rightDown", new MoveDownAction(rightPaddle));
-//        rightPaddle.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "rightUp");
-//        rightPaddle.getActionMap().put("rightUp", new MoveUpAction(rightPaddle));
+        /* Create the window for the game */
+        JFrame frame = new JFrame("PONG");
+        frame.setSize(MAX_WIDTH, MAX_HEIGHT);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        /* Create and add KeyListeners to the game board */
-        LeftPaddleListener leftListener = new LeftPaddleListener(leftPaddle);
-        RightPaddleListener rightListener = new RightPaddleListener(rightPaddle);
-        gameBoard.addKeyListener(leftListener);
-        gameBoard.addKeyListener(rightListener);
-        
-        /* Add the paddles and the ball to the screen and make the game board visible */
-        gameBoard.getContentPane().add(leftPaddle);
-        gameBoard.getContentPane().add(ball);
-        gameBoard.getContentPane().add(rightPaddle);
-        gameBoard.setVisible(true);
-        
-//        Timer timer = new Timer();
-//        BallMotion task = new BallMotion(ball);
-//        timer.schedule(task, 1, 10);
+        /* Create the screen for the game and add Key Listeners for the paddles */
+        /* NOTE: I don't know if it's better to use Key Listeners or Key Bindings.
+         *       I've asked/looked around and heard people recommend using Key Bindings over Key Listeners and vise-versa.
+         *       I'd like to know your thoughts.
+         */
+        GameField gameGrid = new GameField();
+        frame.addKeyListener(new LeftPaddleListener(frame, gameGrid));
+        frame.addKeyListener(new RightPaddleListener(frame, gameGrid));
+        frame.add(gameGrid);
+        frame.setVisible(true);
 
-    
+        /* Create timers to refresh the screen and control movement */
+        Timer ballTimer = new Timer();
+        Timer paddleTimer = new Timer();
+        ballTimer.schedule(new BallMotionTask(gameGrid), 1000, 5);
+        paddleTimer.schedule(new PaddleMotionTask(gameGrid), 0, 5);
     }
+   
+    
 }
